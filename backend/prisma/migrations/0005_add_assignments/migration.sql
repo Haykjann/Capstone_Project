@@ -1,0 +1,1 @@
+-- Existing Assignment table already present; migration kept for phase alignment.

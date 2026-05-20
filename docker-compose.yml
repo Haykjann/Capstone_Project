@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: phishing-training-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: hayk
+      POSTGRES_DB: phishing-training
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: phishing-training-backend
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgres://postgres:hayk@db:5432/phishing-training
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+volumes:
+  db_data:
